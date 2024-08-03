@@ -6,101 +6,102 @@
 /*   By: mirokugo <mirokugo@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 14:32:39 by mirokugo          #+#    #+#             */
-/*   Updated: 2024/07/07 20:01:29 by mirokugo         ###   ########.fr       */
+/*   Updated: 2024/08/03 18:50:21 by mirokugo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char *read_to_leftover(int fd, char *leftover)
+static char	*read_to_leftover(int fd, char *leftover)
 {
-    char    *buffer;
-    int     read_bytes;
-    char    *temp;
+	char	*buffer;
+	int		read_bytes;
+	char	*temp;
 
-    buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-    if (!buffer)
-        return (NULL);
-    read_bytes = 1;
-    while (!leftover || (!ft_strchr(leftover, '\n') && read_bytes != 0))
-    {
-        read_bytes = read(fd, buffer, BUFFER_SIZE);
-        if (read_bytes == -1)
-        {
-            free(buffer);
-            free(leftover);
-            return (NULL);
-        }
-        buffer[read_bytes] = '\0';
-        temp = leftover;
-        leftover = ft_strjoin(temp ? temp : "", buffer);
-        free(temp);
-        if (!leftover)
-        {
-            free(buffer);
-            return (NULL);
-        }
-    }
-    free(buffer);
-    return (leftover);
+	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buffer)
+		return (NULL);
+	read_bytes = 1;
+	while (!leftover || (!ft_strchr(leftover, '\n') && read_bytes != 0))
+	{
+		read_bytes = read(fd, buffer, BUFFER_SIZE);
+		if (read_bytes == -1)
+			return (free(buffer), free(leftover), NULL);
+		buffer[read_bytes] = '\0';
+		temp = leftover;
+		leftover = ft_strjoin(temp ? temp : "", buffer);
+		free(temp);
+		if (!leftover)
+			return (free(buffer), NULL);
+	}
+	return (free(buffer), leftover);
 }
 
 static char	*extract_line(char *leftover)
 {
-    int		i;
-    char	*line;
+	int		i;
+	char	*line;
 
-    i = 0;
-    if (!leftover[i])
-        return (NULL);
-    while (leftover[i] && leftover[i] != '\n')
-        i++;
-    line = ft_substr(leftover, 0, i + 1);
-    if (!line)
-        return (NULL);
-    if (line[i] == '\n')
-        line[i + 1] = '\0';
-    return (line);
+	i = 0;
+	if (!leftover[i])
+		return (NULL);
+	while (leftover[i] && leftover[i] != '\n')
+		i++;
+	line = ft_substr(leftover, 0, i + 1);
+	if (!line)
+		return (NULL);
+	if (line[i] == '\n')
+		line[i + 1] = '\0';
+	return (line);
 }
 
-static char *update_leftover(char *leftover)
+static char	*update_leftover(char *leftover)
 {
-    int     i;
-    char    *new_leftover;
+	int		i;
+	char	*new_leftover;
 
-    i = 0;
-    while (leftover[i] && leftover[i] != '\n')
-        i++;
-    if (!leftover[i])
-    {
-        free(leftover);
-        return (NULL);
-    }
-    if (leftover[i + 1] == '\0')
-    {
-        free(leftover);
-        return (ft_strdup(""));
-    }
-    new_leftover = ft_substr(leftover, i + 1, ft_strlen(leftover) - i - 1);
-    free(leftover);
-    return (new_leftover);
+	i = 0;
+	while (leftover[i] && leftover[i] != '\n')
+		i++;
+	if (!leftover[i])
+	{
+		free(leftover);
+		return (NULL);
+	}
+	if (leftover[i + 1] == '\0')
+	{
+		free(leftover);
+		return (ft_strdup(""));
+	}
+	new_leftover = ft_substr(leftover, i + 1, ft_strlen(leftover) - i - 1);
+	free(leftover);
+	return (new_leftover);
 }
 
-char    *get_next_line(int fd)
+char	*get_next_line(int fd)
 {
-    static char *leftover;
-    char        *line;
+	char		*line;
+	static char	*leftover;
 
-    if (fd < 0 || BUFFER_SIZE <= 0)
-        return (NULL);
-    leftover = read_to_leftover(fd, leftover);
-    if (!leftover)
-        return (NULL);
-    line = extract_line(leftover);
-    leftover = update_leftover(leftover);
-    return (line);
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	leftover = read_to_leftover(fd, leftover);
+	if (!leftover)
+		return (NULL);
+	line = extract_line(leftover);
+	leftover = update_leftover(leftover);
+	return (line);
 }
 
+size_t	ft_strlen(const char *s)
+{
+	size_t	len;
+
+	len = 0;
+	while (s[len])
+		len++;
+	return (len);
+}
 
 // int	main(void)
 // {
