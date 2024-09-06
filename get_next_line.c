@@ -6,7 +6,7 @@
 /*   By: mirokugo <mirokugo@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 14:32:39 by mirokugo          #+#    #+#             */
-/*   Updated: 2024/08/03 18:50:21 by mirokugo         ###   ########.fr       */
+/*   Updated: 2024/09/06 23:00:43 by mirokugo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,10 @@ static char	*read_to_leftover(int fd, char *leftover)
 			return (free(buffer), free(leftover), NULL);
 		buffer[read_bytes] = '\0';
 		temp = leftover;
-		leftover = ft_strjoin(temp ? temp : "", buffer);
+		if (leftover)
+			leftover = ft_strjoin(leftover, buffer);
+		else
+			leftover = ft_strdup(buffer);
 		free(temp);
 		if (!leftover)
 			return (free(buffer), NULL);
