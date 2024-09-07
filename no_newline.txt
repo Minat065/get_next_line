@@ -1,0 +1,3 @@
+This file has multiple lines
+But it doesn't end with a newline
+The last line is this one

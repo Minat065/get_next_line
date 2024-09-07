@@ -1,0 +1,24 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    FILE *file = fopen("binary_file.bin", "wb");
+    if (file == NULL) {
+        perror("Error opening file");
+        return 1;
+    }
+
+    // Write some text
+    fprintf(file, "This is some text in a binary file.\n");
+
+    // Write some binary data
+    for (int i = 0; i < 256; i++) {
+        fputc(i, file);
+    }
+
+    // Write some more text
+    fprintf(file, "\nThis is more text after binary data.\n");
+
+    fclose(file);
+    return 0;
+}

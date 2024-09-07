@@ -1,0 +1,7 @@
+This is a normal text file.
+It contains multiple lines.
+Some lines are short.
+Others are a bit longer, but still within reasonable limits.
+The purpose of this file is to test basic functionality.
+Make sure to handle newline characters correctly.
+EOF should be properly detected.
