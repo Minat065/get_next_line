@@ -10,29 +10,33 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../get_next_line.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <fcntl.h>
-#include <string.h>
+#include "../get_next_line.h"
 
 int main(int argc, char **argv)
 {
-    int fd;
-    char *line;
+    if (argc != 2)
+    {
+        fprintf(stderr, "Usage: %s <input_file>\n", argv[0]);
+        return EXIT_FAILURE;
+    }
 
-    if (argc == 2)
+    char *line;
+    int fd = open(argv[1], O_RDONLY);
+    if (fd == -1)
     {
-        fd = open(argv[1], O_RDONLY);
-        while ((line = get_next_line(fd)))
-        {
-            printf("%s\n", line);
-            free(line);
-        }
-        close(fd);
+        perror("Cannot open file");
+        return EXIT_FAILURE;
     }
-    else
+
+    while ((line = get_next_line(fd)) != NULL)
     {
-        printf("Usage: ./gnl_test file_name\n");
+        printf("%s", line);  // Assuming newline is included in line
+        free(line);
     }
-    return (0);
+
+    close(fd);
+    return EXIT_SUCCESS;
 }
